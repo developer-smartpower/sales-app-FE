@@ -1,0 +1,9 @@
+export const VERY_LIGHT_LAVENDER = "#F1EBFC";
+export const ROYAL_PURPLE = "#7536D9";
+export const ORCHID = "#D072D9";
+export const ORCHID_PURPLE = "#D475DF";
+export const CHARCOAL_BLACK = "#1F1F1F";
+export const WHITE = "#FFFFFF";
+export const RUST_RED = "#d44038ff";
+export const BLACK = "#333333";
+export const SECONDARY_TEXT = "#6B7280";

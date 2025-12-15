@@ -1,0 +1,123 @@
+import { useEffect, useState } from "react";
+import { Box } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import * as productService from "../../services/productService";
+import nodatafound from "../../assets/images/utils/nodatafound.png";
+import ComponentWrapper from "../../components/ComponentWrapper";
+import CustomTable from "../../components/CustomTable";
+import CustomSearchbar from "../../components/CustomSearchbar";
+import { Add, FilterAlt } from "@mui/icons-material";
+import * as COLORS from "../../assets/colors";
+
+const Products = () => {
+  const navigate = useNavigate();
+  const [products, setProducts] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
+
+  // fetch list
+  const getProductList = async () => {
+    try {
+      const response = await productService.getProductList();
+      if (response && response.status === 200 && response.data.data) {
+        setProducts(response.data.data);
+      }
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    getProductList();
+  }, []);
+
+  // table
+  const columnsArr = [
+    { label: "Product Name", key: "name" },
+    { label: "Description", key: "description" },
+    { label: "Supplier", key: "supplier_id" },
+    { label: "Manufacturer", key: "manufacturer" },
+    { label: "Code", key: "code_name" },
+  ];
+
+  const onViewItemPressed = (row) => {
+    const { product_id } = row;
+    console.log('alkdjaskljdaslkjd', product_id)
+    navigate("/products/addProduct", { state: { product_id, mode: "edit" } });
+  };
+
+  const onDeleteItemPressed = async (row) => {
+    try {
+      const response = await productService.deleteProduct(row.product_id);
+      if (response && response.status === 200) {
+        // Refresh the list after delete
+        getProductList();
+      }
+    } catch (error) {}
+  };
+
+  const renderHeaderContent = () => {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          width: "90%",
+        }}
+      >
+        <CustomSearchbar
+          placeholder={"search here"}
+          value={searchValue}
+          onSearchChange={(value) => setSearchValue(value)}
+          customParentStyles={{ mr: 4 }}
+        />
+        <Box
+          sx={{
+            display: "flex",
+            height: "50px",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <FilterAlt sx={{ fontSize: 24, color: COLORS.BLACK }} />
+        </Box>
+      </Box>
+    );
+  };
+
+  return (
+    <ComponentWrapper
+      primaryBtnIcon={<Add sx={{ fontSize: 18, color: COLORS.BLACK }} />}
+      content={renderHeaderContent}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          flex: 1,
+          borderRadius: "16px",
+          backgroundColor: "#fff",
+        }}
+      >
+        {products && products.length > 0 ? (
+          <CustomTable
+            columns={columnsArr}
+            data={products}
+            onViewItemPressed={(row) => onViewItemPressed(row)}
+            onDeleteItemPressed={(row) => onDeleteItemPressed(row)}
+          />
+        ) : (
+          <Box
+            sx={{
+              display: "flex",
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <img src={nodatafound} style={{ height: "40%" }} />
+          </Box>
+        )}
+      </Box>
+    </ComponentWrapper>
+  );
+};
+
+export default Products;
