@@ -11,6 +11,7 @@ const CustomDropdown = ({
   regex,
   errorMessage = "",
   onError = () => {},
+  disabled,
 }) => {
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -51,6 +52,7 @@ const CustomDropdown = ({
             color: "#4B5563",
             mb: "16px",
           }}
+          disabled={disabled}
         >
           {/* Placeholder */}
           <MenuItem value="">

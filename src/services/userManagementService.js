@@ -1,26 +1,33 @@
 import axiosInstance from "./common/axiosInstance";
 import * as endpoints from "./common/endpoints";
 
-export const signIn = async (payload) => {
-  return await axiosInstance.post(endpoints.signin, payload);
+export const addMerchant = async (payload) => {
+  return await axiosInstance.post(endpoints.addMerchant, payload);
 };
 
-export const signout = async () => {
-  return await axiosInstance.get(endpoints.signout);
+export const getMerchantList = async () => {
+  return await axiosInstance.get(endpoints.getMerchantList);
 };
 
-export const getProductDetails = async () => {
-  return await axiosInstance.get(endpoints.getProfileDetails);
+export const getMerchantDetails = async () => {
+  return await axiosInstance.get(
+    `${endpoints.getMerchantDetails}/${merchant_id}`
+  );
 };
 
-export const getNewTokens = async (payload) => {
-  return await axiosInstance.post(endpoints.getNewTokens, payload);
+export const updateMerchant = async (merchant_id, payload) => {
+  return await axiosInstance.put(
+    `${endpoints.updateMerchant}/${merchant_id}`,
+    payload
+  );
 };
 
-export const forgotPassword = async () => {
-  return await axiosInstance.post(endpoints.forgotPassword);
+export const deActivateMerchant = async (merchant_id) => {
+  return await axiosInstance.patch(
+    `${endpoints.deActivateMerchant}/${merchant_id}`
+  );
 };
 
-export const resetPassword = async (payload) => {
-  return await axiosInstance.post(endpoints.resetPassword, payload);
+export const getMerchatLookup = async () => {
+  return await axiosInstance.get(endpoints.getMerchatLookup);
 };

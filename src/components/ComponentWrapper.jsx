@@ -27,7 +27,6 @@ const ComponentWrapper = ({
       navigationHeaderTitle={navigationHeaderTitle}
       onNavigationPressed={onNavigationPressed}
     />
-
     <Container
       sx={{
         display: "flex",
@@ -50,7 +49,14 @@ const ComponentWrapper = ({
           </Box>
         )}
       </Box>
-      <Box sx={{ display: "flex", flex: 1, overflowY: "auto", mb: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flex: 1,
+          overflowY: "auto",
+          flexDirection: "column",
+        }}
+      >
         {children}
       </Box>
       {footer && (

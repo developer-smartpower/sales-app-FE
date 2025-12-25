@@ -8,9 +8,10 @@ const InputBoxRenderer = ({ title, children }) => {
         display: "flex",
         flex: 1,
         flexDirection: "column",
+        mb: 6,
       }}
     >
-      <Typography variant="subtitle1" sx={{ mb: 1 }}>
+      <Typography variant="subtitle1" sx={{ mb: 2 }}>
         {title}
       </Typography>
       <Box
@@ -19,8 +20,8 @@ const InputBoxRenderer = ({ title, children }) => {
           backgroundColor: "#fff",
           borderRadius: "16px",
           display: "flex",
-          flexDirection: "column",
-          p: 4,
+          flexDirection: "row",
+          ph: 4,
         }}
       >
         {children}

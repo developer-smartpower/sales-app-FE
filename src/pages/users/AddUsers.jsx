@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Grid } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import * as userManagementService from "../../services/userManagementService";
 import ComponentWrapper from "../../components/ComponentWrapper";
 import CustomTextInput from "../../components/CustomTextInput";
@@ -10,7 +10,7 @@ const AddUsers = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { user_id, mode } = location.state;
+  const { user_id, mode } = location.state || "";
 
   const [formData, setFormData] = useState({
     first_name: "",

@@ -29,7 +29,7 @@ const Returns = () => {
   }, []);
 
   // add item
-  const onAddReturnPressed = () => navigate("/returnList/addProduct");
+  const onAddReturnPressed = () => navigate("/returns/addReturn");
 
   // table
   const columnsArr = [
@@ -42,7 +42,7 @@ const Returns = () => {
 
   const onViewItemPressed = (row) => {
     const { product_id } = row;
-    navigate("/returnList/addProduct", { state: { product_id, mode: "edit" } });
+    navigate("/returns/addReturn", { state: { product_id, mode: "edit" } });
   };
 
   const onDeleteItemPressed = async (row) => {

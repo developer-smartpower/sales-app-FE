@@ -18,6 +18,7 @@ const CustomTable = ({
   columns = [],
   data = [],
   onViewItemPressed = () => {},
+  disableSecondaryBtn = false,
   onDeleteItemPressed = () => {},
 }) => {
   // pagination
@@ -55,16 +56,18 @@ const CustomTable = ({
                 {columns.map((col) => (
                   <TableCell key={col.key}>{row[col.key]}</TableCell>
                 ))}
-                <TableCell>
+                <TableCell sx={{}}>
                   <IconButton onClick={() => onViewItemPressed(row)}>
                     <VisibilityIcon sx={{ fontSize: 16 }} />
                   </IconButton>
-                  <IconButton
-                    color="error"
-                    onClick={() => onDeleteItemPressed(row)}
-                  >
-                    <DeleteIcon sx={{ fontSize: 16 }} />
-                  </IconButton>
+                  {!disableSecondaryBtn && (
+                    <IconButton
+                      color="error"
+                      onClick={() => onDeleteItemPressed(row)}
+                    >
+                      <DeleteIcon sx={{ fontSize: 16 }} />
+                    </IconButton>
+                  )}
                 </TableCell>
               </TableRow>
             ))}

@@ -11,8 +11,26 @@ import * as COLORS from "../../assets/colors";
 
 const Prices = () => {
   const navigate = useNavigate();
+
   const [priceList, setPriceList] = useState([]);
   const [searchValue, setSearchValue] = useState("");
+
+  // table
+  const columnsArr = [
+    { label: "Product Name", key: "product_id" },
+    { label: "Selling Price", key: "selling_price" },
+    { label: "Updated By", key: "updated_by" },
+    { label: "Created At", key: "created_at" },
+    { label: "Updated At", key: "updated_at" },
+  ];
+
+  // add item
+  const onAddPriceItemPressed = () => navigate("/prices/addPrice");
+
+  const onViewItemPressed = (row) => {
+    const { price_id } = row;
+    navigate("/prices/addPrice", { state: { price_id, mode: "edit" } });
+  };
 
   // fetch list
   const getPriceList = async () => {
@@ -27,33 +45,6 @@ const Prices = () => {
   useEffect(() => {
     getPriceList();
   }, []);
-
-  // add item
-  const onAddPriceItemPressed = () => navigate("/priceList/addProduct");
-
-  // table
-  const columnsArr = [
-    { label: "Product Name", key: "name" },
-    { label: "Description", key: "description" },
-    { label: "Supplier", key: "supplier_id" },
-    { label: "Manufacturer", key: "manufacturer" },
-    { label: "Code", key: "code_name" },
-  ];
-
-  const onViewItemPressed = (row) => {
-    const { product_id } = row;
-    navigate("/priceList/addProduct", { state: { product_id, mode: "edit" } });
-  };
-
-  const onDeleteItemPressed = async (row) => {
-    try {
-      const response = await priceService.deleteProduct(row.product_id);
-      if (response && response.status === 200) {
-        // Refresh the list after delete
-        getPriceList();
-      }
-    } catch (error) {}
-  };
 
   const renderHeaderContent = () => {
     return (
@@ -86,7 +77,7 @@ const Prices = () => {
 
   return (
     <ComponentWrapper
-      primaryBtnText={"Add Price"}
+      primaryBtnText={"Add New Price Item"}
       onPrimaryBtnPressed={onAddPriceItemPressed}
       primaryBtnIcon={<Add sx={{ fontSize: 18, color: COLORS.BLACK }} />}
       content={renderHeaderContent}
@@ -105,7 +96,7 @@ const Prices = () => {
             columns={columnsArr}
             data={priceList}
             onViewItemPressed={(row) => onViewItemPressed(row)}
-            onDeleteItemPressed={(row) => onDeleteItemPressed(row)}
+            disableSecondaryBtn
           />
         ) : (
           <Box

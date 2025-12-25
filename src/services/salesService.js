@@ -1,26 +1,21 @@
 import axiosInstance from "./common/axiosInstance";
 import * as endpoints from "./common/endpoints";
 
-export const signIn = async (payload) => {
-  return await axiosInstance.post(endpoints.signin, payload);
+export const createSale = async (payload) => {
+  return await axiosInstance.post(endpoints.createSale, payload);
 };
 
-export const signout = async () => {
-  return await axiosInstance.get(endpoints.signout);
+export const getSalesList = async () => {
+  return await axiosInstance.get(endpoints.getSalesList);
 };
 
-export const getProductDetails = async () => {
-  return await axiosInstance.get(endpoints.getProfileDetails);
+export const getSaleById = async () => {
+  return await axiosInstance.get(`${endpoints.getSaleById}/${sales_id}`);
 };
 
-export const getNewTokens = async (payload) => {
-  return await axiosInstance.post(endpoints.getNewTokens, payload);
-};
-
-export const forgotPassword = async () => {
-  return await axiosInstance.post(endpoints.forgotPassword);
-};
-
-export const resetPassword = async (payload) => {
-  return await axiosInstance.post(endpoints.resetPassword, payload);
+export const updateSales = async (sales_id, payload) => {
+  return await axiosInstance.put(
+    `${endpoints.updateSales}/${sales_id}`,
+    payload
+  );
 };

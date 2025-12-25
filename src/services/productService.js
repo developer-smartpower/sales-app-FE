@@ -10,3 +10,7 @@ export const getProductDetails = async (product_id) => {
     `${endpoints.getProductDetails}/${product_id}`
   );
 };
+
+export const getProductLookUp = async () => {
+  return await axiosInstance.get(endpoints.getProductLookUp);
+};

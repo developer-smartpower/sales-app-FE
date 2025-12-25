@@ -14,73 +14,50 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [searchValue, setSearchValue] = useState("");
 
-  // fetch list
-  const getProductList = async () => {
-    try {
-      const response = await productService.getProductList();
-      if (response && response.status === 200 && response.data.data) {
-        setProducts(response.data.data);
-      }
-    } catch (error) {}
-  };
+  const columnsArr = [
+    { label: "Product Name", key: "name" },
+    { label: "Description", key: "description" },
+    { label: "Code", key: "code_name" },
+    { label: "Manufacturer", key: "manufacturer" },
+    { label: "Supplier", key: "supplier_id" },
+  ];
 
   useEffect(() => {
     getProductList();
   }, []);
 
-  // table
-  const columnsArr = [
-    { label: "Product Name", key: "name" },
-    { label: "Description", key: "description" },
-    { label: "Supplier", key: "supplier_id" },
-    { label: "Manufacturer", key: "manufacturer" },
-    { label: "Code", key: "code_name" },
-  ];
-
-  const onViewItemPressed = (row) => {
-    const { product_id } = row;
-    console.log('alkdjaskljdaslkjd', product_id)
-    navigate("/products/addProduct", { state: { product_id, mode: "edit" } });
-  };
-
-  const onDeleteItemPressed = async (row) => {
+  const getProductList = async () => {
     try {
-      const response = await productService.deleteProduct(row.product_id);
-      if (response && response.status === 200) {
-        // Refresh the list after delete
-        getProductList();
-      }
-    } catch (error) {}
+      const res = await productService.getProductList();
+      if (res?.status === 200) setProducts(res.data.data || []);
+    } catch (err) {}
   };
 
-  const renderHeaderContent = () => {
-    return (
+  const onViewItemPressed = (row) =>
+    navigate("/products/addProduct", {
+      state: { product_id: row.product_id, mode: "edit" },
+    });
+
+  const renderHeaderContent = () => (
+    <Box sx={{ display: "flex", flexDirection: "row", width: "90%" }}>
+      <CustomSearchbar
+        placeholder="search here"
+        value={searchValue}
+        onSearchChange={setSearchValue}
+        customParentStyles={{ mr: 4 }}
+      />
       <Box
         sx={{
           display: "flex",
-          flexDirection: "row",
-          width: "90%",
+          height: 50,
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        <CustomSearchbar
-          placeholder={"search here"}
-          value={searchValue}
-          onSearchChange={(value) => setSearchValue(value)}
-          customParentStyles={{ mr: 4 }}
-        />
-        <Box
-          sx={{
-            display: "flex",
-            height: "50px",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <FilterAlt sx={{ fontSize: 24, color: COLORS.BLACK }} />
-        </Box>
+        <FilterAlt sx={{ fontSize: 24, color: COLORS.BLACK }} />
       </Box>
-    );
-  };
+    </Box>
+  );
 
   return (
     <ComponentWrapper
@@ -92,16 +69,16 @@ const Products = () => {
           display: "flex",
           flexDirection: "column",
           flex: 1,
-          borderRadius: "16px",
+          borderRadius: 16,
           backgroundColor: "#fff",
         }}
       >
-        {products && products.length > 0 ? (
+        {products.length > 0 ? (
           <CustomTable
             columns={columnsArr}
             data={products}
-            onViewItemPressed={(row) => onViewItemPressed(row)}
-            onDeleteItemPressed={(row) => onDeleteItemPressed(row)}
+            onViewItemPressed={onViewItemPressed}
+            disableSecondaryBtn
           />
         ) : (
           <Box

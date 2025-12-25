@@ -15,7 +15,7 @@ const Header = ({ navigationHeaderTitle, onNavigationPressed }) => {
         backgroundColor: "#fff",
         borderRadius: 2,
       }}
-      mb={4}
+      mb={2}
       p={2}
     >
       <Box sx={{ display: "flex", flex: 1 }}>

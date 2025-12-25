@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Box, Grid } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as productService from "../../services/productService";
+import * as priceService from "../../services/priceService";
 import ComponentWrapper from "../../components/ComponentWrapper";
 import CustomTextInput from "../../components/CustomTextInput";
 import CustomButton from "../../components/CustomButton";
@@ -11,47 +12,51 @@ const AddPrices = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { product_id, mode } = location.state || "";
+  const { price_id, mode } = location.state || "";
+
+  const [productList, setProductList] = useState([]);
 
   // input fields
   const [formData, setFormData] = useState({
     product_id: "",
     selling_price: "",
-    discount: "",
   });
 
-  const getPriceDetails_ = async () => {
+  const [errorData, setErrorData] = useState({
+    product_id: false,
+    selling_price: false,
+  });
+
+  const getProductLookup_ = async () => {
     try {
-      const response = await productService.getPriceDetails(product_id);
+      const response = await productService.getProductLookUp();
       if (response && response.status === 200 && response.data.data) {
-        const productDetails = response.data.data;
+        setProductList(response.data.data);
+      }
+    } catch (error) {}
+  };
+
+  const viewPriceDetails_ = async () => {
+    try {
+      const response = await priceService.viewPriceDetails(price_id);
+      if (response && response.status === 200 && response.data.data) {
+        const priceItemDetails = response.data.data;
         setFormData({
-          name: productDetails.name,
-          description: productDetails.description,
-          manufacturer: productDetails.manufacturer,
-          supplier_id: productDetails.supplier_id,
-          code_name: productDetails.code_name,
+          product_id: priceItemDetails.product_id,
+          selling_price: priceItemDetails.selling_price,
         });
       }
     } catch (error) {}
   };
 
   useEffect(() => {
-    if (mode && mode === "edit") {
-      getPriceDetails_();
+    getProductLookup_();
+    if (mode && mode === "edit" && price_id) {
+      viewPriceDetails_();
     }
-  });
+  }, [mode, price_id]);
 
-  const supplierList = [
-    { data: "cc1c1097-5c48-48c7-ae7b-b5554f5f6008", label: "company" },
-  ];
-
-  const [errorData, setErrorData] = useState({
-    name: false,
-    description: false,
-    manufacturer: false,
-  });
-
+  // handle input fields
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -69,8 +74,8 @@ const AddPrices = () => {
   // on submit
   const onSubmitPressed = async () => {
     try {
-      const response = await productService.addProduct(formData);
-      if (response && response.status === 200) {
+      const response = await priceService.addNewPriceItem(formData);
+      if (response && response.status === 201) {
         navigate(-1);
       }
     } catch (error) {}
@@ -90,74 +95,29 @@ const AddPrices = () => {
         }}
       >
         <Box>
-          <CustomTextInput
-            label="Product Name"
-            name="name"
-            value={formData.name}
-            placeholder="Enter the product name"
-            onChange={handleChange}
-            onError={onError}
-            regex={/^[A-Za-z0-9\s\-]{2,50}$/}
-            errorMessage={
-              "Product name should be 2–50 characters and cannot include special characters"
-            }
-          />
-          <CustomTextInput
-            label="Description"
-            name="description"
-            value={formData.description}
-            placeholder="Enter product description"
-            onChange={handleChange}
-            onError={onError}
-            regex={/^[A-Za-z0-9\s.,\-()]{5,200}$/}
-            errorMessage={
-              "Description should be 5–200 characters and must not contain invalid symbols"
-            }
-          />
-          <CustomTextInput
-            label="Manufacturer"
-            name="manufacturer"
-            value={formData.manufacturer}
-            placeholder="Enter product manufacturer"
-            onChange={handleChange}
-            onError={onError}
-            regex={/^[A-Za-z0-9\s\-&,]{2,50}$/}
-            errorMessage={
-              "Manufacturer must be 2–50 characters and contain only letters, numbers, spaces, or basic symbols"
-            }
-          />
-          <CustomTextInput
-            label="Supplier"
-            name="supplier_id"
-            value={formData.supplier_id}
-            placeholder="Select supplier"
-            onChange={handleChange}
-          />
           <CustomDropdown
-            label="Supplier"
-            name="supplier_id"
-            value={formData.supplier_id}
-            placeholder="Select supplier"
-            options={supplierList}
+            label="Product Name"
+            name="product_id"
+            value={formData.product_id}
+            placeholder="Select Product"
+            options={productList}
             onChange={handleChange}
           />
           <CustomTextInput
-            label="Code Name"
-            name="code_name"
-            value={formData.code_name}
-            placeholder="Enter the code name"
+            label="Selling Price"
+            name="selling_price"
+            value={formData.selling_price}
+            placeholder="Enter selling price"
             onChange={handleChange}
             onError={onError}
-            regex={/^[A-Za-z0-9\s\-]{2,50}$/}
-            errorMessage={
-              "Product name should be 2–50 characters and cannot include special characters"
-            }
+            regex={/^\d{1,8}(\.\d{1,2})?$/}
+            errorMessage="Enter a valid price (up to 10 digits, max 2 decimals)"
           />
         </Box>
         <CustomButton
           label={"Add Price"}
           onClick={onSubmitPressed}
-          disabled={Object.values(errorData).includes(true)}
+          // disabled={Object.values(errorData).includes(true)}
         />
       </Box>
     </ComponentWrapper>

@@ -23,7 +23,7 @@ import Orders from "./pages/orders";
 import AddOrders from "./pages/orders/AddOrders";
 
 import Sales from "./pages/sales";
-import AddSales from "./pages/sales/AddSales";
+import ViewSalesDetails from "./pages/sales/ViewSalesDetails";
 
 import Prices from "./pages/prices";
 import AddPrices from "./pages/prices/AddPrices";
@@ -63,15 +63,18 @@ function App() {
 
             {/* sales */}
             <Route path="/sales" element={<Sales />} />
-            <Route path="/sales/addSales" element={<AddSales />} />
+            <Route
+              path="/sales/viewSalesDetails"
+              element={<ViewSalesDetails />}
+            />
 
             {/* payments */}
             <Route path="/prices" element={<Prices />} />
-            <Route path="/prices/addPrices" element={<AddPrices />} />
+            <Route path="/prices/addPrice" element={<AddPrices />} />
 
             {/* returns */}
             <Route path="/returns" element={<Returns />} />
-            <Route path="/returns/addReturns" element={<AddReturns />} />
+            <Route path="/returns/addReturn" element={<AddReturns />} />
 
             {/* profile */}
             <Route path="/profile" element={<Profile />} />

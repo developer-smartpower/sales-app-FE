@@ -6,21 +6,31 @@ import ComponentWrapper from "../../components/ComponentWrapper";
 import CustomTextInput from "../../components/CustomTextInput";
 import CustomButton from "../../components/CustomButton";
 import CustomDropdown from "../../components/CustomDropdown";
+import InputBoxRenderer from "../../components/InputBoxRenderer";
 
 const AddMerchants = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // get route state
   const { merchant_id, mode } = location.state || "";
-
 
   // input fields
   const [formData, setFormData] = useState({
-    company_name: "",
-    spoc_name: "",
-    address: "",
+    merchant_name: "",
+    contact_person_name: "",
+    email: "",
     mobile_number: "",
     landline: "",
+    address: "",
+  });
+  const [errorData, setErrorData] = useState({
+    merchant_name: false,
+    contact_person_name: false,
+    email: false,
+    mobile_number: false,
+    landline: false,
+    address: false,
   });
 
   const getMerchantDetails_ = async () => {
@@ -29,11 +39,12 @@ const AddMerchants = () => {
       if (response && response.status === 200 && response.data.data) {
         const merchantDetails = response.data.data;
         setFormData({
-          company_name: merchantDetails.company_name,
-          spoc_name: merchantDetails.spoc_name,
-          address: merchantDetails.address,
+          merchant_name: merchantDetails.merchant_name,
+          contact_person_name: merchantDetails.contact_person_name,
+          email: merchantDetails.email,
           mobile_number: merchantDetails.mobile_number,
           landline: merchantDetails.landline,
+          address: merchantDetails.address,
         });
       }
     } catch (error) {}
@@ -45,14 +56,7 @@ const AddMerchants = () => {
     }
   });
 
-  const [errorData, setErrorData] = useState({
-    company_name: false,
-    spoc_name: false,
-    address: false,
-    mobile_number: false,
-    landline: false,
-  });
-
+  // handle input
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -82,72 +86,86 @@ const AddMerchants = () => {
       navigationHeaderTitle="Add New Merchants"
       onNavigationPressed={() => navigate(-1)}
     >
-      <Box
-        sx={{
-          flex: 1,
-          backgroundColor: "#fff",
-          borderRadius: "16px",
-          p: 4,
-        }}
-      >
-        <Box>
-          <CustomTextInput
-            label="Merchant Name"
-            name="company_name"
-            value={formData.company_name}
-            placeholder="Enter the merchant name"
-            onChange={handleChange}
-            onError={onError}
-            regex={/^[A-Za-z0-9\s\-]{2,50}$/}
-            errorMessage={
-              "Product name should be 2–50 characters and cannot include special characters"
-            }
-          />
-          <CustomTextInput
-            label="SPOC Name"
-            name="spoc_name"
-            value={formData.spoc_name}
-            placeholder="Enter the spoc name"
-            onChange={handleChange}
-            onError={onError}
-            regex={/^[A-Za-z0-9\s\-]{2,50}$/}
-            errorMessage={
-              "Product name should be 2–50 characters and cannot include special characters"
-            }
-          />
-          <CustomTextInput
-            label="Address"
-            name="address"
-            value={formData.address}
-            placeholder="Enter address"
-            onChange={handleChange}
-            onError={onError}
-            regex={/^[A-Za-z0-9\s\-&,]{2,50}$/}
-            errorMessage={
-              "Manufacturer must be 2–50 characters and contain only letters, numbers, spaces, or basic symbols"
-            }
-          />
-          <CustomTextInput
-            label="Mobile number"
-            name="mobile_number"
-            value={formData.mobile_number}
-            placeholder="Enter product mobile number"
-            onChange={handleChange}
-          />
-          <CustomTextInput
-            label="landline"
-            name="landline"
-            value={formData.landline}
-            placeholder="Enter product landline"
-            onChange={handleChange}
-          />
-        </Box>
-        <CustomButton
-          label={"Add Merchant"}
-          onClick={onSubmitPressed}
-          disabled={Object.values(errorData).includes(true)}
+      <InputBoxRenderer title={"Merchant Details"}>
+        <CustomTextInput
+          label="Merchant Name"
+          name="company_name"
+          value={formData.company_name}
+          placeholder="Enter the merchant name"
+          onChange={handleChange}
+          onError={onError}
+          regex={/^[A-Za-z0-9\s\-&,]{2,200}$/}
+          errorMessage={
+            "Company name should be 2–200 characters and can include letters, numbers, spaces, -, & ,"
+          }
+          customMainStyles={{ mr: 10 }}
         />
-      </Box>
+        <CustomTextInput
+          label="SPOC Name"
+          name="contact_person_name"
+          value={formData.contact_person_name}
+          placeholder="Enter the spoc name"
+          onChange={handleChange}
+          onError={onError}
+          regex={/^[A-Za-z\s]{2,150}$/}
+          errorMessage={"Contact person name should be 2–150 letters only"}
+        />
+      </InputBoxRenderer>
+      <InputBoxRenderer title={"Merchant Details"}>
+        <CustomTextInput
+          label="Address"
+          name="address"
+          value={formData.address}
+          placeholder="Enter address"
+          onChange={handleChange}
+          onError={onError}
+          regex={/^[A-Za-z0-9\s\-&,]{2,250}$/}
+          errorMessage={
+            "Address must be 2–250 characters and can include letters, numbers, spaces, -, &, ,"
+          }
+        />
+      </InputBoxRenderer>
+      <InputBoxRenderer title={"Primary Contact Details"}>
+        <CustomTextInput
+          label="Mobile number"
+          name="mobile_number"
+          value={formData.mobile_number}
+          placeholder="Enter mobile number"
+          onChange={handleChange}
+          onError={onError}
+          regex={/^\+?\d{7,15}$/}
+          errorMessage={"Mobile number must be 7–15 digits, can include +"}
+        />
+
+        <CustomTextInput
+          label="Landline"
+          name="landline"
+          value={formData.landline}
+          placeholder="Enter landline number"
+          onChange={handleChange}
+          onError={onError}
+          regex={/^\+?\d{7,15}$/}
+          errorMessage={"Landline must be 7–15 digits, can include +"}
+        />
+      </InputBoxRenderer>
+      <InputBoxRenderer title={"Secondary Contact Details"}>
+        <CustomTextInput
+          label="Email"
+          name="email"
+          value={formData.email}
+          placeholder="Enter email"
+          onChange={handleChange}
+          onError={onError}
+          regex={/^[^\s@]+@[^\s@]+\.[^\s@]+$/}
+          errorMessage={"Enter a valid email address"}
+        />
+      </InputBoxRenderer>
+
+      <CustomButton
+        label={"Add Merchant"}
+        onClick={onSubmitPressed}
+        disabled={Object.values(errorData).includes(true)}
+      />
     </ComponentWrapper>
   );
 };

@@ -11,7 +11,7 @@ const AddReturns = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { return_id, mode } = location.state;
+  const { return_id, mode } = location.state || "";
 
   // input fields
   const [formData, setFormData] = useState({

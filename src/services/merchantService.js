@@ -27,3 +27,7 @@ export const deActivateMerchant = async (merchant_id) => {
     `${endpoints.deActivateMerchant}/${merchant_id}`
   );
 };
+
+export const getMerchatLookup = async () => {
+  return await axiosInstance.get(endpoints.getMerchatLookup);
+};

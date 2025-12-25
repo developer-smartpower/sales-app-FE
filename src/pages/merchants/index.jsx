@@ -8,88 +8,77 @@ import CustomTable from "../../components/CustomTable";
 import CustomSearchbar from "../../components/CustomSearchbar";
 import { Add, FilterAlt } from "@mui/icons-material";
 import * as COLORS from "../../assets/colors";
+import dayjs from "dayjs";
 
 const Merchants = () => {
   const navigate = useNavigate();
   const [merchants, setMerchantList] = useState([]);
   const [searchValue, setSearchValue] = useState("");
 
-  // fetch list
-  const getMerchantList = async () => {
-    try {
-      const response = await merchantService.getMerchantList();
-      if (response && response.status === 200 && response.data.data) {
-        setMerchantList(response.data.data);
-      }
-    } catch (error) {}
-  };
-
   useEffect(() => {
-    getMerchantList();
+    (async () => {
+      try {
+        const res = await merchantService.getMerchantList();
+        if (res?.status === 200 && res?.data?.data) {
+          setMerchantList(
+            res.data.data.map((item) => ({
+              ...item,
+              created_at: item.created_at
+                ? dayjs(item.created_at).format("DD MMM YYYY")
+                : null,
+              updated_at: item.updated_at
+                ? dayjs(item.updated_at).format("DD MMM YYYY")
+                : null,
+            }))
+          );
+        }
+      } catch {}
+    })();
   }, []);
 
-  // add item
-  const onAddMerchantPressed = () => navigate("/merchants/addMerchant");
-
-  // table
   const columnsArr = [
     { label: "Merchant Name", key: "company_name" },
-    { label: "SPOC Name", key: "spoc_name" },
-    { label: "Address", key: "address" },
+    { label: "Contact Person", key: "contact_person_name" },
+    { label: "Email", key: "email" },
     { label: "Mobile Number", key: "mobile_number" },
     { label: "Landline", key: "landline" },
+    { label: "Address", key: "address" },
+    { label: "Status", key: "status" },
+    { label: "Created At", key: "created_at" },
+    { label: "Updated By", key: "updated_by" },
+    { label: "Updated At", key: "updated_at" },
   ];
 
-  const onViewItemPressed = (row) => {
-    const { merchant_id } = row;
+  const onViewItemPressed = (row) =>
     navigate("/merchants/addMerchant", {
-      state: { merchant_id, mode: "edit" },
+      state: { merchant_id: row.merchant_id, mode: "edit" },
     });
-  };
 
-  const onDeleteItemPressed = async (row) => {
-    try {
-      const response = await merchantService.disableMerchant(row.merchant_id);
-      if (response && response.status === 200) {
-        // Refresh the list after delete
-        getMerchantList();
-      }
-    } catch (error) {}
-  };
-
-  const renderHeaderContent = () => {
-    return (
+  const renderHeaderContent = () => (
+    <Box sx={{ display: "flex", flexDirection: "row", width: "90%" }}>
+      <CustomSearchbar
+        placeholder="search here"
+        value={searchValue}
+        onSearchChange={setSearchValue}
+        customParentStyles={{ mr: 4 }}
+      />
       <Box
         sx={{
           display: "flex",
-          flexDirection: "row",
-          width: "90%",
+          height: 50,
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        <CustomSearchbar
-          placeholder={"search here"}
-          value={searchValue}
-          onSearchChange={(value) => setSearchValue(value)}
-          customParentStyles={{ mr: 4 }}
-        />
-        <Box
-          sx={{
-            display: "flex",
-            height: "50px",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <FilterAlt sx={{ fontSize: 24, color: COLORS.BLACK }} />
-        </Box>
+        <FilterAlt sx={{ fontSize: 24, color: COLORS.BLACK }} />
       </Box>
-    );
-  };
+    </Box>
+  );
 
   return (
     <ComponentWrapper
-      primaryBtnText={"Add Merchant"}
-      onPrimaryBtnPressed={onAddMerchantPressed}
+      primaryBtnText="Add Merchant"
+      onPrimaryBtnPressed={() => navigate("/merchants/addMerchant")}
       primaryBtnIcon={<Add sx={{ fontSize: 18, color: COLORS.BLACK }} />}
       content={renderHeaderContent}
     >
@@ -98,16 +87,16 @@ const Merchants = () => {
           display: "flex",
           flexDirection: "column",
           flex: 1,
-          borderRadius: "16px",
+          borderRadius: 16,
           backgroundColor: "#fff",
         }}
       >
-        {merchants && merchants.length > 0 ? (
+        {merchants.length > 0 ? (
           <CustomTable
             columns={columnsArr}
             data={merchants}
-            onViewItemPressed={(row) => onViewItemPressed(row)}
-            onDeleteItemPressed={(row) => onDeleteItemPressed(row)}
+            onViewItemPressed={onViewItemPressed}
+            disableSecondaryBtn
           />
         ) : (
           <Box

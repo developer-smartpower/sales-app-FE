@@ -7,11 +7,11 @@ import CustomTextInput from "../../components/CustomTextInput";
 import CustomButton from "../../components/CustomButton";
 import CustomDropdown from "../../components/CustomDropdown";
 
-const AddSales = () => {
+const ViewSalesDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { product_id, mode } = location.state;
+  const { product_id, mode } = location.state || "";
 
   // input fields
   const [formData, setFormData] = useState({
@@ -80,7 +80,7 @@ const AddSales = () => {
 
   return (
     <ComponentWrapper
-      navigationHeaderTitle="Add New Product"
+      navigationHeaderTitle="Add Sales"
       onNavigationPressed={() => navigate(-1)}
     >
       <Box
@@ -136,8 +136,8 @@ const AddSales = () => {
             onChange={handleChange}
           />
           <CustomDropdown
-            label="Supplier"
-            name="supplier_id"
+            label="Select Order"
+            name="order_id"
             value={formData.supplier_id}
             placeholder="Select supplier"
             options={supplierList}
@@ -166,4 +166,4 @@ const AddSales = () => {
   );
 };
 
-export default AddSales;
+export default ViewSalesDetails;

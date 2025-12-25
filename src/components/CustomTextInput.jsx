@@ -11,6 +11,7 @@ const CustomTextInput = ({
   regex,
   errorMessage,
   onError = () => {},
+  customMainStyles = {},
 }) => {
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -29,7 +30,16 @@ const CustomTextInput = ({
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", width: "500px" }}>
+    <Box
+      sx={[
+        {
+          display: "flex",
+          flexDirection: "column",
+          width: "500px",
+        },
+        customMainStyles,
+      ]}
+    >
       <Typography
         variant="subtitle2"
         fontWeight={500}

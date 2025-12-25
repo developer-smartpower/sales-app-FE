@@ -11,6 +11,7 @@ import * as COLORS from "../../assets/colors";
 
 const Orders = () => {
   const navigate = useNavigate();
+
   const [products, setProducts] = useState([]);
   const [searchValue, setSearchValue] = useState("");
 
@@ -29,20 +30,19 @@ const Orders = () => {
   }, []);
 
   // add item
-  const onAddProductPressed = () => navigate("/products/addProduct");
+  const onAddProductPressed = () => navigate("/orders/addOrders");
 
   // table
   const columnsArr = [
-    { label: "Product Name", key: "name" },
-    { label: "Description", key: "description" },
-    { label: "Supplier", key: "supplier_id" },
-    { label: "Manufacturer", key: "manufacturer" },
-    { label: "Code", key: "code_name" },
+    { label: "Order ID", key: "order_id" },
+    { label: "Created At", key: "created_at" },
+    { label: "Updated By", key: "updated_by" },
+    { label: "Updated At", key: "updated_at" },
   ];
 
   const onViewItemPressed = (row) => {
     const { product_id } = row;
-    navigate("/products/addProduct", { state: { product_id, mode: "edit" } });
+    navigate("/orders/addOrders", { state: { product_id, mode: "edit" } });
   };
 
   const onDeleteItemPressed = async (row) => {
@@ -86,7 +86,7 @@ const Orders = () => {
 
   return (
     <ComponentWrapper
-      primaryBtnText={"Add Product"}
+      primaryBtnText={"Add Order"}
       onPrimaryBtnPressed={onAddProductPressed}
       primaryBtnIcon={<Add sx={{ fontSize: 18, color: COLORS.BLACK }} />}
       content={renderHeaderContent}

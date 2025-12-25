@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import * as productService from "../../services/productService";
+import * as salesService from "../../services/salesService";
 import nodatafound from "../../assets/images/utils/nodatafound.png";
 import ComponentWrapper from "../../components/ComponentWrapper";
 import CustomTable from "../../components/CustomTable";
@@ -11,13 +11,14 @@ import * as COLORS from "../../assets/colors";
 
 const Sales = () => {
   const navigate = useNavigate();
+
   const [products, setProducts] = useState([]);
   const [searchValue, setSearchValue] = useState("");
 
   // fetch list
   const getProductList = async () => {
     try {
-      const response = await productService.getProductList();
+      const response = await salesService.getSalesList();
       if (response && response.status === 200 && response.data.data) {
         setProducts(response.data.data);
       }
@@ -29,25 +30,26 @@ const Sales = () => {
   }, []);
 
   // add item
-  const onAddProductPressed = () => navigate("/products/addProduct");
+  const onAddProductPressed = () => navigate("/sales/addSales");
 
   // table
   const columnsArr = [
-    { label: "Product Name", key: "name" },
-    { label: "Description", key: "description" },
-    { label: "Supplier", key: "supplier_id" },
-    { label: "Manufacturer", key: "manufacturer" },
-    { label: "Code", key: "code_name" },
+    { label: "Order ID", key: "order_id" },
+    { label: "Created At", key: "created_at" },
+    { label: "Updated By", key: "updated_by" },
+    { label: "Updated At", key: "updated_at" },
   ];
 
   const onViewItemPressed = (row) => {
     const { product_id } = row;
-    navigate("/products/addProduct", { state: { product_id, mode: "edit" } });
+    navigate("/sales/viewSalesDetails", {
+      state: { product_id, mode: "edit" },
+    });
   };
 
   const onDeleteItemPressed = async (row) => {
     try {
-      const response = await productService.deleteProduct(row.product_id);
+      const response = await salesService.deleteProduct(row.product_id);
       if (response && response.status === 200) {
         // Refresh the list after delete
         getProductList();
@@ -86,8 +88,6 @@ const Sales = () => {
 
   return (
     <ComponentWrapper
-      primaryBtnText={"Add Product"}
-      onPrimaryBtnPressed={onAddProductPressed}
       primaryBtnIcon={<Add sx={{ fontSize: 18, color: COLORS.BLACK }} />}
       content={renderHeaderContent}
     >
